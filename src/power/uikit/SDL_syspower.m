@@ -39,9 +39,11 @@ SDL_UIKit_UpdateBatteryMonitoring(void)
 {
     if (SDL_UIKitLastPowerInfoQuery) {
         if (SDL_TICKS_PASSED(SDL_GetTicks(), SDL_UIKitLastPowerInfoQuery + BATTERY_MONITORING_TIMEOUT)) {
+#if TARGET_OS_IOS || TARGET_OS_WATCH
             UIDevice *uidev = [UIDevice currentDevice];
             SDL_assert([uidev isBatteryMonitoringEnabled] == YES);
             [uidev setBatteryMonitoringEnabled:NO];
+#endif
             SDL_UIKitLastPowerInfoQuery = 0;
         }
     }
@@ -53,11 +55,12 @@ SDL_GetPowerInfo_UIKit(SDL_PowerState * state, int *seconds, int *percent)
     @autoreleasepool {
         UIDevice *uidev = [UIDevice currentDevice];
 
+#if TARGET_OS_IOS || TARGET_OS_WATCH
         if (!SDL_UIKitLastPowerInfoQuery) {
             SDL_assert(uidev.isBatteryMonitoringEnabled == NO);
             uidev.batteryMonitoringEnabled = YES;
         }
-
+#endif
         /* UIKit_GL_SwapWindow() (etc) will check this and disable the battery
          *  monitoring if the app hasn't queried it in the last X seconds.
          *  Apparently monitoring the battery burns battery life.  :)
@@ -67,6 +70,7 @@ SDL_GetPowerInfo_UIKit(SDL_PowerState * state, int *seconds, int *percent)
 
         *seconds = -1;   /* no API to estimate this in UIKit. */
 
+#if TARGET_OS_IOS || TARGET_OS_WATCH
         switch (uidev.batteryState) {
         case UIDeviceBatteryStateCharging:
             *state = SDL_POWERSTATE_CHARGING;
@@ -88,6 +92,7 @@ SDL_GetPowerInfo_UIKit(SDL_PowerState * state, int *seconds, int *percent)
 
         const float level = uidev.batteryLevel;
         *percent = ( (level < 0.0f) ? -1 : ((int) ((level * 100) + 0.5f)) );
+#endif
         return SDL_TRUE; /* always the definitive answer on iOS. */
     }
 }

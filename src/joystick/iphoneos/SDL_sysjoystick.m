@@ -20,6 +20,8 @@
 */
 #include "../../SDL_internal.h"
 
+#if TARGET_OS_IOS
+
 /* This is the iOS implementation of the SDL joystick API */
 
 #include "SDL_joystick.h"
@@ -199,5 +201,7 @@ SDL_JoystickGUID SDL_SYS_JoystickGetGUID(SDL_Joystick * joystick)
     SDL_memcpy( &guid, name, SDL_min( sizeof(guid), SDL_strlen( name ) ) );
     return guid;
 }
+
+#endif
 
 /* vi: set ts=4 sw=4 expandtab: */

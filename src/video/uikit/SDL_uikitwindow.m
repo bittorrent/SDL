@@ -108,9 +108,14 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
     }
 
     if (displaydata.uiscreen == [UIScreen mainScreen]) {
+#if TARGET_OS_TV
+        BOOL supportsLandscape = YES;
+        BOOL supportsPortrait = NO;
+#else
         NSUInteger orients = UIKit_GetSupportedOrientations(window);
         BOOL supportsLandscape = (orients & UIInterfaceOrientationMaskLandscape) != 0;
         BOOL supportsPortrait = (orients & (UIInterfaceOrientationMaskPortrait|UIInterfaceOrientationMaskPortraitUpsideDown)) != 0;
+#endif
 
         /* Make sure the width/height are oriented correctly */
         if ((width > height && !supportsLandscape) || (height > width && !supportsPortrait)) {
@@ -190,6 +195,7 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
             }
         }
 
+#if TARGET_OS_IOS
         if (data.uiscreen == [UIScreen mainScreen]) {
             if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) {
                 [UIApplication sharedApplication].statusBarHidden = YES;
@@ -197,6 +203,7 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
                 [UIApplication sharedApplication].statusBarHidden = NO;
             }
         }
+#endif
 
         /* ignore the size user requested, and make a fullscreen window */
         /* !!! FIXME: can we have a smaller view? */
@@ -258,6 +265,7 @@ UIKit_UpdateWindowBorder(_THIS, SDL_Window * window)
     SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
     SDL_uikitviewcontroller *viewcontroller = data.viewcontroller;
 
+#if TARGET_OS_IOS
     if (data.uiwindow.screen == [UIScreen mainScreen]) {
         if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
             [UIApplication sharedApplication].statusBarHidden = YES;
@@ -270,6 +278,7 @@ UIKit_UpdateWindowBorder(_THIS, SDL_Window * window)
             [viewcontroller setNeedsStatusBarAppearanceUpdate];
         }
     }
+#endif
 
     /* Update the view's frame to account for the status bar change. */
     viewcontroller.view.frame = UIKit_ComputeViewFrame(window, data.uiwindow.screen);
@@ -356,6 +365,7 @@ UIKit_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
     }
 }
 
+#if TARGET_OS_IOS
 NSUInteger
 UIKit_GetSupportedOrientations(SDL_Window * window)
 {
@@ -421,6 +431,7 @@ UIKit_GetSupportedOrientations(SDL_Window * window)
 
     return orientationMask;
 }
+#endif
 
 int
 SDL_iPhoneSetAnimationCallback(SDL_Window * window, int interval, void (*callback)(void*), void *callbackParam)

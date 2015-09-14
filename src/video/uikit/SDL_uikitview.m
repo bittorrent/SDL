@@ -45,7 +45,9 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.autoresizesSubviews = YES;
 
+#if TARGET_OS_IOS || TARGET_OS_WATCH
         self.multipleTouchEnabled = YES;
+#endif
 
         touchId = 1;
         SDL_AddTouch(touchId, "");

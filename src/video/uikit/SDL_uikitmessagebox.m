@@ -26,6 +26,7 @@
 #include "SDL_uikitvideo.h"
 
 
+#if TARGET_OS_IOS
 /* Display a UIKit message box */
 
 static SDL_bool s_showingMessageBox = SDL_FALSE;
@@ -90,6 +91,7 @@ UIKit_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
 
     return 0;
 }
+#endif
 
 #endif /* SDL_VIDEO_DRIVER_UIKIT */
 

@@ -675,6 +675,7 @@ COREAUDIO_Init(SDL_AudioDriverImpl * impl)
 #else
     impl->OnlyHasDefaultOutputDevice = 1;
 
+#if TARGET_OS_IOS
     /* Set category to ambient sound so that other music continues playing.
        You can change this at runtime in your own code if you need different
        behavior.  If this is common, we can add an SDL hint for this.
@@ -682,6 +683,7 @@ COREAUDIO_Init(SDL_AudioDriverImpl * impl)
     AudioSessionInitialize(NULL, NULL, NULL, nil);
     UInt32 category = kAudioSessionCategory_AmbientSound;
     AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(UInt32), &category);
+#endif
 #endif
 
     impl->ProvidesOwnCallbackThread = 1;

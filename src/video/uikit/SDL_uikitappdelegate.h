@@ -20,12 +20,15 @@
 */
 
 #import <UIKit/UIKit.h>
+#import <TargetConditionals.h>
 
 @interface SDLLaunchScreenController : UIViewController
 
 - (instancetype)init;
 - (void)loadView;
+#if TARGET_OS_IOS || TARGET_OS_WATCH
 - (NSUInteger)supportedInterfaceOrientations;
+#endif
 
 @end
 

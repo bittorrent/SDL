@@ -156,12 +156,16 @@ UIKit_AddDisplay(UIScreen *uiscreen)
 SDL_bool
 UIKit_IsDisplayLandscape(UIScreen *uiscreen)
 {
+#if TARGET_OS_IOS
     if (uiscreen == [UIScreen mainScreen]) {
         return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
     } else {
         CGSize size = uiscreen.bounds.size;
         return (size.width > size.height);
     }
+#elif TARGET_OS_TV
+    return SDL_TRUE;
+#endif
 }
 
 int
