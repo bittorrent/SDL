@@ -26,7 +26,7 @@
 #include "SDL_uikitvideo.h"
 
 
-#if TARGET_OS_IOS
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
 /* Display a UIKit message box */
 
 static SDL_bool s_showingMessageBox = SDL_FALSE;

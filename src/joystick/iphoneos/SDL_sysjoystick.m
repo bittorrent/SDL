@@ -20,7 +20,7 @@
 */
 #include "../../SDL_internal.h"
 
-#if TARGET_OS_IOS
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
 
 /* This is the iOS implementation of the SDL joystick API */
 

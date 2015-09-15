@@ -120,7 +120,7 @@
     SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, w, h);
 }
 
-#if TARGET_OS_IOS
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
 - (NSUInteger)supportedInterfaceOrientations
 {
     return UIKit_GetSupportedOrientations(window);
@@ -137,7 +137,7 @@
     return (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) != 0;
 }
 
-#if TARGET_OS_IOS
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     /* We assume most SDL apps don't have a bright white background. */

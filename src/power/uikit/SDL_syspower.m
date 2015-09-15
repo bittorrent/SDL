@@ -39,7 +39,7 @@ SDL_UIKit_UpdateBatteryMonitoring(void)
 {
     if (SDL_UIKitLastPowerInfoQuery) {
         if (SDL_TICKS_PASSED(SDL_GetTicks(), SDL_UIKitLastPowerInfoQuery + BATTERY_MONITORING_TIMEOUT)) {
-#if TARGET_OS_IOS || TARGET_OS_WATCH
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS || TARGET_OS_WATCH
             UIDevice *uidev = [UIDevice currentDevice];
             SDL_assert([uidev isBatteryMonitoringEnabled] == YES);
             [uidev setBatteryMonitoringEnabled:NO];
@@ -55,7 +55,7 @@ SDL_GetPowerInfo_UIKit(SDL_PowerState * state, int *seconds, int *percent)
     @autoreleasepool {
         UIDevice *uidev = [UIDevice currentDevice];
 
-#if TARGET_OS_IOS || TARGET_OS_WATCH
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS || TARGET_OS_WATCH
         if (!SDL_UIKitLastPowerInfoQuery) {
             SDL_assert(uidev.isBatteryMonitoringEnabled == NO);
             uidev.batteryMonitoringEnabled = YES;
@@ -70,7 +70,7 @@ SDL_GetPowerInfo_UIKit(SDL_PowerState * state, int *seconds, int *percent)
 
         *seconds = -1;   /* no API to estimate this in UIKit. */
 
-#if TARGET_OS_IOS || TARGET_OS_WATCH
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS || TARGET_OS_WATCH
         switch (uidev.batteryState) {
         case UIDeviceBatteryStateCharging:
             *state = SDL_POWERSTATE_CHARGING;

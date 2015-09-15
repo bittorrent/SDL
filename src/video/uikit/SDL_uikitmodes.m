@@ -156,7 +156,7 @@ UIKit_AddDisplay(UIScreen *uiscreen)
 SDL_bool
 UIKit_IsDisplayLandscape(UIScreen *uiscreen)
 {
-#if TARGET_OS_IOS
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
     if (uiscreen == [UIScreen mainScreen]) {
         return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
     } else {

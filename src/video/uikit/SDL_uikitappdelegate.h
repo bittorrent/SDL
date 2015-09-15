@@ -26,7 +26,7 @@
 
 - (instancetype)init;
 - (void)loadView;
-#if TARGET_OS_IOS || TARGET_OS_WATCH
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS || TARGET_OS_WATCH
 - (NSUInteger)supportedInterfaceOrientations;
 #endif
 

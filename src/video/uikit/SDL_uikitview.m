@@ -45,7 +45,7 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.autoresizesSubviews = YES;
 
-#if TARGET_OS_IOS || TARGET_OS_WATCH
+#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS || TARGET_OS_WATCH
         self.multipleTouchEnabled = YES;
 #endif
 
