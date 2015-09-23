@@ -195,7 +195,7 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
             }
         }
 
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
+#if TARGET_OS_IOS
         if (data.uiscreen == [UIScreen mainScreen]) {
             if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) {
                 [UIApplication sharedApplication].statusBarHidden = YES;
@@ -265,7 +265,7 @@ UIKit_UpdateWindowBorder(_THIS, SDL_Window * window)
     SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
     SDL_uikitviewcontroller *viewcontroller = data.viewcontroller;
 
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
+#if TARGET_OS_IOS
     if (data.uiwindow.screen == [UIScreen mainScreen]) {
         if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
             [UIApplication sharedApplication].statusBarHidden = YES;
@@ -365,7 +365,7 @@ UIKit_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
     }
 }
 
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
+#if TARGET_OS_IOS
 NSUInteger
 UIKit_GetSupportedOrientations(SDL_Window * window)
 {

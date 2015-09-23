@@ -46,12 +46,12 @@
 
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
+#if TARGET_OS_IOS
 - (NSUInteger)supportedInterfaceOrientations;
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 #endif
 - (BOOL)prefersStatusBarHidden;
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
+#if TARGET_OS_IOS
 - (UIStatusBarStyle)preferredStatusBarStyle;
 #endif
 

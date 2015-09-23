@@ -26,11 +26,11 @@
 #include "SDL_uikitvideo.h"
 
 
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
 /* Display a UIKit message box */
 
 static SDL_bool s_showingMessageBox = SDL_FALSE;
 
+#if TARGET_OS_IOS
 @interface SDLAlertViewDelegate : NSObject <UIAlertViewDelegate>
 
 @property (nonatomic, assign) int clickedIndex;
@@ -45,7 +45,7 @@ static SDL_bool s_showingMessageBox = SDL_FALSE;
 }
 
 @end
-
+#endif
 
 SDL_bool
 UIKit_ShowingMessageBox()
@@ -56,6 +56,7 @@ UIKit_ShowingMessageBox()
 int
 UIKit_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
 {
+#if TARGET_OS_IOS // TODO: figure this out for tvOS
     int i;
     const SDL_MessageBoxButtonData *buttons = messageboxdata->buttons;
 
@@ -88,10 +89,10 @@ UIKit_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
 
         alert.delegate = nil;
     }
+#endif
 
     return 0;
 }
-#endif
 
 #endif /* SDL_VIDEO_DRIVER_UIKIT */
 

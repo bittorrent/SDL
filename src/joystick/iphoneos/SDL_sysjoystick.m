@@ -20,8 +20,6 @@
 */
 #include "../../SDL_internal.h"
 
-#if !defined(TARGET_OS_IOS) || TARGET_OS_IOS
-
 /* This is the iOS implementation of the SDL joystick API */
 
 #include "SDL_joystick.h"
@@ -30,14 +28,18 @@
 #include "../SDL_sysjoystick.h"
 #include "../SDL_joystick_c.h"
 
+#if TARGET_OS_IOS
 #import <CoreMotion/CoreMotion.h>
+#endif
 
 /* needed for SDL_IPHONE_MAX_GFORCE macro */
 #import "SDL_config_iphoneos.h"
 
 const char *accelerometerName = "iOS Accelerometer";
 
+#if TARGET_OS_IOS
 static CMMotionManager *motionManager = nil;
+#endif
 static int numjoysticks = 0;
 
 /* Function to scan the system for joysticks.
@@ -91,6 +93,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
     joystick->nballs = 0;
     joystick->nbuttons = 0;
 
+#if TARGET_OS_IOS
     @autoreleasepool {
         if (motionManager == nil) {
             motionManager = [[CMMotionManager alloc] init];
@@ -100,6 +103,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick, int device_index)
         motionManager.accelerometerUpdateInterval = 0.1;
         [motionManager startAccelerometerUpdates];
     }
+#endif
 
     return 0;
 }
@@ -112,6 +116,7 @@ SDL_bool SDL_SYS_JoystickAttached(SDL_Joystick *joystick)
 
 static void SDL_SYS_AccelerometerUpdate(SDL_Joystick * joystick)
 {
+#if TARGET_OS_IOS
     const float maxgforce = SDL_IPHONE_MAX_GFORCE;
     const SInt16 maxsint16 = 0x7FFF;
     CMAcceleration accel;
@@ -149,6 +154,7 @@ static void SDL_SYS_AccelerometerUpdate(SDL_Joystick * joystick)
     SDL_PrivateJoystickAxis(joystick, 0, (accel.x / maxgforce) * maxsint16);
     SDL_PrivateJoystickAxis(joystick, 1, -(accel.y / maxgforce) * maxsint16);
     SDL_PrivateJoystickAxis(joystick, 2, (accel.z / maxgforce) * maxsint16);
+#endif
 }
 
 /* Function to update the state of a joystick - called as a device poll.
@@ -166,19 +172,22 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 void
 SDL_SYS_JoystickClose(SDL_Joystick * joystick)
 {
+#if TARGET_OS_IOS
     @autoreleasepool {
         [motionManager stopAccelerometerUpdates];
     }
+#endif
 }
 
 /* Function to perform any system-specific joystick related cleanup */
 void
 SDL_SYS_JoystickQuit(void)
 {
+#if TARGET_OS_IOS
     @autoreleasepool {
         motionManager = nil;
     }
-
+#endif
     numjoysticks = 0;
 }
 
@@ -201,7 +210,5 @@ SDL_JoystickGUID SDL_SYS_JoystickGetGUID(SDL_Joystick * joystick)
     SDL_memcpy( &guid, name, SDL_min( sizeof(guid), SDL_strlen( name ) ) );
     return guid;
 }
-
-#endif
 
 /* vi: set ts=4 sw=4 expandtab: */
