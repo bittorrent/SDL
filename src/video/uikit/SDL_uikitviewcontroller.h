@@ -18,17 +18,24 @@
  misrepresented as being the original software.
  3. This notice may not be removed or altered from any source distribution.
  */
+#include "../../SDL_internal.h"
 
 #import <UIKit/UIKit.h>
 
 #include "../SDL_sysvideo.h"
-
 #include "SDL_touch.h"
 
-#if SDL_IPHONE_KEYBOARD
-@interface SDL_uikitviewcontroller : UIViewController <UITextFieldDelegate>
+#if TARGET_OS_TV
+#import <GameController/GameController.h>
+#define SDLRootViewController GCEventViewController
 #else
-@interface SDL_uikitviewcontroller : UIViewController
+#define SDLRootViewController UIViewController
+#endif
+
+#if SDL_IPHONE_KEYBOARD
+@interface SDL_uikitviewcontroller : SDLRootViewController <UITextFieldDelegate>
+#else
+@interface SDL_uikitviewcontroller : SDLRootViewController
 #endif
 
 @property (nonatomic, assign) SDL_Window *window;
@@ -46,13 +53,10 @@
 
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
-#if TARGET_OS_IOS
+
+#if !TARGET_OS_TV
 - (NSUInteger)supportedInterfaceOrientations;
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
-#endif
 - (BOOL)prefersStatusBarHidden;
-#if TARGET_OS_IOS
-- (UIStatusBarStyle)preferredStatusBarStyle;
 #endif
 
 #if SDL_IPHONE_KEYBOARD

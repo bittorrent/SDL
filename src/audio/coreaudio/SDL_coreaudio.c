@@ -675,15 +675,17 @@ COREAUDIO_Init(SDL_AudioDriverImpl * impl)
 #else
     impl->OnlyHasDefaultOutputDevice = 1;
 
-#if TARGET_OS_IOS
     /* Set category to ambient sound so that other music continues playing.
        You can change this at runtime in your own code if you need different
        behavior.  If this is common, we can add an SDL hint for this.
+       FIXME: AudioSession was deprecated in iOS 7 in favor of AVAudioSession,
+       which is an Objective-C API, but this is a C file...
     */
+#if !TARGET_OS_TV
     AudioSessionInitialize(NULL, NULL, NULL, nil);
     UInt32 category = kAudioSessionCategory_AmbientSound;
     AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(UInt32), &category);
-#endif
+#endif /* !TARGET_OS_TV */
 #endif
 
     impl->ProvidesOwnCallbackThread = 1;

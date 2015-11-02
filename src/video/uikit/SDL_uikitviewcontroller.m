@@ -38,6 +38,17 @@
 #include "keyinfotable.h"
 #endif
 
+#if TARGET_OS_TV
+static void
+SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char *oldValue, const char *hint)
+{
+    @autoreleasepool {
+        SDL_uikitviewcontroller *viewcontroller = (__bridge SDL_uikitviewcontroller *) userdata;
+        viewcontroller.controllerUserInteractionEnabled = hint && (*hint != '0');
+    }
+}
+#endif
+
 @implementation SDL_uikitviewcontroller {
     CADisplayLink *displayLink;
     int animationInterval;
@@ -59,6 +70,12 @@
 #if SDL_IPHONE_KEYBOARD
         [self initKeyboard];
 #endif
+
+#if TARGET_OS_TV
+        SDL_AddHintCallback(SDL_HINT_APPLE_TV_CONTROLLER_UI_EVENTS,
+                            SDL_AppleTVControllerUIHintChanged,
+                            (__bridge void *) self);
+#endif
     }
     return self;
 }
@@ -67,6 +84,12 @@
 {
 #if SDL_IPHONE_KEYBOARD
     [self deinitKeyboard];
+#endif
+
+#if TARGET_OS_TV
+    SDL_DelHintCallback(SDL_HINT_APPLE_TV_CONTROLLER_UI_EVENTS,
+                        SDL_AppleTVControllerUIHintChanged,
+                        (__bridge void *) self);
 #endif
 }
 
@@ -120,7 +143,7 @@
     SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESIZED, w, h);
 }
 
-#if TARGET_OS_IOS
+#if !TARGET_OS_TV
 - (NSUInteger)supportedInterfaceOrientations
 {
     return UIKit_GetSupportedOrientations(window);
@@ -130,18 +153,10 @@
 {
     return ([self supportedInterfaceOrientations] & (1 << orient)) != 0;
 }
-#endif
 
 - (BOOL)prefersStatusBarHidden
 {
     return (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) != 0;
-}
-
-#if TARGET_OS_IOS
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    /* We assume most SDL apps don't have a bright white background. */
-    return UIStatusBarStyleLightContent;
 }
 #endif
 

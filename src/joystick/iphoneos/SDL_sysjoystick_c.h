@@ -18,23 +18,38 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+#include "../../SDL_internal.h"
 
-#import <UIKit/UIKit.h>
+#ifndef SDL_JOYSTICK_IOS_H
+#define SDL_JOYSTICK_IOS_H
 
-@interface SDLLaunchScreenController : UIViewController
+#include "SDL_stdinc.h"
+#include "../SDL_sysjoystick.h"
 
-- (instancetype)init;
-- (void)loadView;
+@class GCController;
 
-@end
+typedef struct joystick_hwdata
+{
+    SDL_bool accelerometer;
 
-@interface SDLUIKitDelegate : NSObject<UIApplicationDelegate>
+    GCController __unsafe_unretained *controller;
+    int num_pause_presses;
 
-+ (id)sharedAppDelegate;
-+ (NSString *)getAppDelegateClassName;
+    char *name;
+    SDL_Joystick *joystick;
+    SDL_JoystickID instance_id;
+    SDL_JoystickGUID guid;
 
-- (void)hideLaunchScreen;
+    int naxes;
+    int nbuttons;
+    int nhats;
 
-@end
+    struct joystick_hwdata *next;
+} joystick_hwdata;
+
+typedef joystick_hwdata SDL_JoystickDeviceItem;
+
+#endif /* SDL_JOYSTICK_IOS_H */
+
 
 /* vi: set ts=4 sw=4 expandtab: */

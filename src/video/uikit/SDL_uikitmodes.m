@@ -156,16 +156,15 @@ UIKit_AddDisplay(UIScreen *uiscreen)
 SDL_bool
 UIKit_IsDisplayLandscape(UIScreen *uiscreen)
 {
-#if TARGET_OS_IOS
+#if !TARGET_OS_TV
     if (uiscreen == [UIScreen mainScreen]) {
         return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
-    } else {
+    } else
+#endif /* !TARGET_OS_TV */
+    {
         CGSize size = uiscreen.bounds.size;
         return (size.width > size.height);
     }
-#elif TARGET_OS_TV
-    return SDL_TRUE;
-#endif
 }
 
 int
@@ -191,6 +190,12 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
         SDL_bool isLandscape = UIKit_IsDisplayLandscape(data.uiscreen);
         SDL_bool addRotation = (data.uiscreen == [UIScreen mainScreen]);
         CGFloat scale = data.uiscreen.scale;
+
+#if TARGET_OS_TV
+        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomTV) {
+            addRotation = SDL_FALSE;
+        }
+#endif
 
 #ifdef __IPHONE_8_0
         /* The UIScreenMode of an iPhone 6 Plus should be 1080x1920 rather than
