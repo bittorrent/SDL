@@ -182,8 +182,10 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
             }
 
             if (bestmode) {
+#if !TARGET_OS_TV
                 SDL_DisplayModeData *modedata = (__bridge SDL_DisplayModeData *)bestmode->driverdata;
                 [data.uiscreen setCurrentMode:modedata.uiscreenmode];
+#endif
 
                 /* desktop_mode doesn't change here (the higher level will
                  * use it to set all the screens back to their defaults

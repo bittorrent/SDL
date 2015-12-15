@@ -205,6 +205,7 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
         }
 #endif
 
+#if !TARGET_OS_TV
         for (UIScreenMode *uimode in data.uiscreen.availableModes) {
             /* The size of a UIScreenMode is in pixels, but we deal exclusively
              * in points (except in SDL_GL_GetDrawableSize.) */
@@ -220,6 +221,7 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
 
             UIKit_AddDisplayMode(display, w, h, uimode, addRotation);
         }
+#endif
     }
 }
 
@@ -228,9 +230,11 @@ UIKit_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
 {
     @autoreleasepool {
         SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
+#if !TARGET_OS_TV
         SDL_DisplayModeData *modedata = (__bridge SDL_DisplayModeData *)mode->driverdata;
 
         [data.uiscreen setCurrentMode:modedata.uiscreenmode];
+#endif
 
         if (data.uiscreen == [UIScreen mainScreen]) {
             /* [UIApplication setStatusBarOrientation:] no longer works reliably

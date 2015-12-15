@@ -397,6 +397,7 @@ SDL_LoadLaunchImageNamed(NSString *name, int screenh)
     SDL_SendAppEvent(SDL_APP_LOWMEMORY);
 }
 
+#if !TARGET_OS_TV
 - (void)application:(UIApplication *)application didChangeStatusBarOrientation:(UIInterfaceOrientation)oldStatusBarOrientation
 {
     BOOL isLandscape = UIInterfaceOrientationIsLandscape(application.statusBarOrientation);
@@ -424,6 +425,7 @@ SDL_LoadLaunchImageNamed(NSString *name, int screenh)
         }
     }
 }
+#endif
 
 - (void)applicationWillResignActive:(UIApplication*)application
 {
