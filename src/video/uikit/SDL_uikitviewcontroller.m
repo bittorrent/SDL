@@ -189,9 +189,11 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
     textField.hidden = YES;
     keyboardVisible = NO;
 
+#if !TARGET_OS_TV
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+#endif
 }
 
 - (void)setView:(UIView *)view
@@ -207,9 +209,11 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 
 - (void)deinitKeyboard
 {
+#if !TARGET_OS_TV
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+#endif
 }
 
 /* reveal onscreen virtual keyboard */
@@ -230,6 +234,7 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
+#if !TARGET_OS_TV
     CGRect kbrect = [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue];
 
     /* The keyboard rect is in the coordinate space of the screen/window, but we
@@ -237,6 +242,7 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
     kbrect = [self.view convertRect:kbrect fromView:nil];
 
     [self setKeyboardHeight:(int)kbrect.size.height];
+#endif
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification
