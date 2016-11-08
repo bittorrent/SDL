@@ -174,17 +174,6 @@ public class SDLActivity extends Activity {
         mLayout.addView(mSurface);
 
         setContentView(mLayout);
-        
-        // Get filename from "Open with" of another application
-        Intent intent = getIntent();
-
-        if (intent != null && intent.getData() != null) {
-            String filename = intent.getData().getPath();
-            if (filename != null) {
-                Log.v(TAG, "Got filename: " + filename);
-                SDLActivity.onNativeDropFile(filename);
-            }
-        }
     }
 
     // Events
@@ -210,6 +199,17 @@ public class SDLActivity extends Activity {
         }
 
         SDLActivity.handleResume();
+
+        // Get filename from "Open with" of another application
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            String filename = intent.getDataString();
+            if (filename != null) {
+                Log.v(TAG, "Got filename: " + filename);
+                SDLActivity.onNativeDropFile(filename);
+            }
+        }
     }
 
 
