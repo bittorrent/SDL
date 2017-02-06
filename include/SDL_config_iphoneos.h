@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -119,11 +119,7 @@
 #define SDL_JOYSTICK_MFI 1
 
 /* Enable Unix style SO loading */
-/* Technically this works, but violates the iOS dev agreement prior to iOS 8 */
-/* #define SDL_LOADSO_DLOPEN 1 */
-
-/* Enable the stub shared object loader (src/loadso/dummy/\*.c) */
-#define SDL_LOADSO_DISABLED 1
+#define SDL_LOADSO_DLOPEN 1
 
 /* Enable various threading systems */
 #define SDL_THREAD_PTHREAD  1

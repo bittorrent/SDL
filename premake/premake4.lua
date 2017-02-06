@@ -1,4 +1,4 @@
--- Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+-- Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 --
 -- This software is provided 'as-is', without any express or implied
 -- warranty.  In no event will the authors be held liable for any damages
@@ -121,7 +121,7 @@ if _OPTIONS["help"] == nil then
 	end
 
 	local genFile = baseLoc .. "/SDL-gen.lua"
-	local file = fileopen(genFile, "wt")
+	local file = fileopen(genFile, "w")
 	print("Generating " .. genFile .. "...")
 	-- begin generating the config header file
 	startGeneration(premakeConfigHeader, premakeTemplateHeader)

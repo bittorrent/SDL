@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -81,6 +81,8 @@
 #cmakedefine HAVE_PTHREAD_NP_H 1
 #cmakedefine HAVE_LIBUDEV_H 1
 #cmakedefine HAVE_DBUS_DBUS_H 1
+#cmakedefine HAVE_IBUS_IBUS_H 1
+#cmakedefine HAVE_FCITX_FRONTEND_H 1
 
 /* C library functions */
 #cmakedefine HAVE_MALLOC 1
@@ -197,6 +199,7 @@
 #cmakedefine SDL_FILESYSTEM_DISABLED @SDL_FILESYSTEM_DISABLED@
 
 /* Enable various audio drivers */
+#cmakedefine SDL_AUDIO_DRIVER_ANDROID @SDL_AUDIO_DRIVER_ANDROID@
 #cmakedefine SDL_AUDIO_DRIVER_ALSA @SDL_AUDIO_DRIVER_ALSA@
 #cmakedefine SDL_AUDIO_DRIVER_ALSA_DYNAMIC @SDL_AUDIO_DRIVER_ALSA_DYNAMIC@
 #cmakedefine SDL_AUDIO_DRIVER_ARTS @SDL_AUDIO_DRIVER_ARTS@
@@ -230,6 +233,7 @@
 #cmakedefine SDL_INPUT_LINUXEV @SDL_INPUT_LINUXEV@
 #cmakedefine SDL_INPUT_LINUXKD @SDL_INPUT_LINUXKD@
 #cmakedefine SDL_INPUT_TSLIB @SDL_INPUT_TSLIB@
+#cmakedefine SDL_JOYSTICK_ANDROID @SDL_JOYSTICK_ANDROID@
 #cmakedefine SDL_JOYSTICK_HAIKU @SDL_JOYSTICK_HAIKU@
 #cmakedefine SDL_JOYSTICK_DINPUT @SDL_JOYSTICK_DINPUT@
 #cmakedefine SDL_JOYSTICK_XINPUT @SDL_JOYSTICK_XINPUT@
@@ -268,6 +272,7 @@
 #cmakedefine SDL_TIMER_WINCE @SDL_TIMER_WINCE@
 
 /* Enable various video drivers */
+#cmakedefine SDL_VIDEO_DRIVER_ANDROID @SDL_VIDEO_DRIVER_ANDROID@
 #cmakedefine SDL_VIDEO_DRIVER_HAIKU @SDL_VIDEO_DRIVER_HAIKU@
 #cmakedefine SDL_VIDEO_DRIVER_COCOA @SDL_VIDEO_DRIVER_COCOA@
 #cmakedefine SDL_VIDEO_DRIVER_DIRECTFB @SDL_VIDEO_DRIVER_DIRECTFB@
@@ -331,6 +336,7 @@
 #cmakedefine SDL_VIDEO_OPENGL_OSMESA_DYNAMIC @SDL_VIDEO_OPENGL_OSMESA_DYNAMIC@
 
 /* Enable system power support */
+#cmakedefine SDL_POWER_ANDROID @SDL_POWER_ANDROID@
 #cmakedefine SDL_POWER_LINUX @SDL_POWER_LINUX@
 #cmakedefine SDL_POWER_WINDOWS @SDL_POWER_WINDOWS@
 #cmakedefine SDL_POWER_MACOSX @SDL_POWER_MACOSX@
@@ -339,6 +345,7 @@
 #cmakedefine SDL_POWER_HARDWIRED @SDL_POWER_HARDWIRED@
 
 /* Enable system filesystem support */
+#cmakedefine SDL_FILESYSTEM_ANDROID @SDL_FILESYSTEM_ANDROID@
 #cmakedefine SDL_FILESYSTEM_HAIKU @SDL_FILESYSTEM_HAIKU@
 #cmakedefine SDL_FILESYSTEM_COCOA @SDL_FILESYSTEM_COCOA@
 #cmakedefine SDL_FILESYSTEM_DUMMY @SDL_FILESYSTEM_DUMMY@

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -99,9 +99,7 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
     /* only one window on iOS, always shown */
     window->flags &= ~SDL_WINDOW_HIDDEN;
 
-    if (displaydata.uiscreen == [UIScreen mainScreen]) {
-        window->flags |= SDL_WINDOW_INPUT_FOCUS;  /* always has input focus */
-    } else {
+    if (displaydata.uiscreen != [UIScreen mainScreen]) {
         window->flags &= ~SDL_WINDOW_RESIZABLE;  /* window is NEVER resizable */
         window->flags &= ~SDL_WINDOW_INPUT_FOCUS;  /* never has input focus */
         window->flags |= SDL_WINDOW_BORDERLESS;  /* never has a status bar. */
@@ -154,7 +152,6 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
     @autoreleasepool {
         SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
         SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
-        const CGSize origsize = data.uiscreen.currentMode.size;
 
         /* SDL currently puts this window at the start of display's linked list. We rely on this. */
         SDL_assert(_this->windows == window);
@@ -167,6 +164,8 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
         /* If monitor has a resolution of 0x0 (hasn't been explicitly set by the
          * user, so it's in standby), try to force the display to a resolution
          * that most closely matches the desired window size. */
+#if !TARGET_OS_TV
+        const CGSize origsize = data.uiscreen.currentMode.size;
         if ((origsize.width == 0.0f) && (origsize.height == 0.0f)) {
             if (display->num_display_modes == 0) {
                 _this->GetDisplayModes(_this, display);
@@ -182,10 +181,8 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
             }
 
             if (bestmode) {
-#if !TARGET_OS_TV
                 SDL_DisplayModeData *modedata = (__bridge SDL_DisplayModeData *)bestmode->driverdata;
                 [data.uiscreen setCurrentMode:modedata.uiscreenmode];
-#endif
 
                 /* desktop_mode doesn't change here (the higher level will
                  * use it to set all the screens back to their defaults
@@ -194,7 +191,6 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
             }
         }
 
-#if !TARGET_OS_TV
         if (data.uiscreen == [UIScreen mainScreen]) {
             if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) {
                 [UIApplication sharedApplication].statusBarHidden = YES;
@@ -324,6 +320,13 @@ UIKit_DestroyWindow(_THIS, SDL_Window * window)
             for (SDL_uikitview *view in views) {
                 [view setSDLWindow:NULL];
             }
+
+            /* iOS may still hold a reference to the window after we release it.
+             * We want to make sure the SDL view controller isn't accessed in
+             * that case, because it would contain an invalid pointer to the old
+             * SDL window. */
+            data.uiwindow.rootViewController = nil;
+            data.uiwindow.hidden = YES;
         }
     }
     window->driverdata = NULL;

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -130,6 +130,7 @@ SetupWindowData(_THIS, SDL_Window * window, HWND hwnd, SDL_bool created)
     data->created = created;
     data->mouse_button_flags = 0;
     data->videodata = videodata;
+    data->initializing = SDL_TRUE;
 
     window->driverdata = data;
 
@@ -254,6 +255,8 @@ SetupWindowData(_THIS, SDL_Window * window, HWND hwnd, SDL_bool created)
 
     /* Enable dropping files */
     DragAcceptFiles(hwnd, TRUE);
+
+    data->initializing = SDL_FALSE;
 
     /* All done! */
     return 0;
@@ -475,7 +478,8 @@ WIN_HideWindow(_THIS, SDL_Window * window)
 void
 WIN_RaiseWindow(_THIS, SDL_Window * window)
 {
-    WIN_SetWindowPositionInternal(_this, window, SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOSIZE);
+    HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
+    SetForegroundWindow(hwnd);
 }
 
 void
@@ -514,6 +518,22 @@ WIN_SetWindowBordered(_THIS, SDL_Window * window, SDL_bool bordered)
     SetWindowLong(hwnd, GWL_STYLE, style);
     WIN_SetWindowPositionInternal(_this, window, SWP_NOCOPYBITS | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOACTIVATE);
     data->in_border_change = SDL_FALSE;
+}
+
+void
+WIN_SetWindowResizable(_THIS, SDL_Window * window, SDL_bool resizable)
+{
+    SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+    HWND hwnd = data->hwnd;
+    DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+
+    if (resizable) {
+        style |= STYLE_RESIZABLE;
+    } else {
+        style &= ~STYLE_RESIZABLE;
+    }
+
+    SetWindowLong(hwnd, GWL_STYLE, style);
 }
 
 void
@@ -556,7 +576,25 @@ WIN_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, 
         y = bounds.y;
         w = bounds.w;
         h = bounds.h;
+
+        /* Unset the maximized flag.  This fixes
+           https://bugzilla.libsdl.org/show_bug.cgi?id=3215
+        */
+        if (style & WS_MAXIMIZE) {
+            data->windowed_mode_was_maximized = SDL_TRUE;
+            style &= ~WS_MAXIMIZE;
+        }
     } else {
+        /* Restore window-maximization state, as applicable.
+           Special care is taken to *not* do this if and when we're
+           alt-tab'ing away (to some other window; as indicated by
+           in_window_deactivation), otherwise
+           https://bugzilla.libsdl.org/show_bug.cgi?id=3215 can reproduce!
+        */
+        if (data->windowed_mode_was_maximized && !data->in_window_deactivation) {
+            style |= WS_MAXIMIZE;
+            data->windowed_mode_was_maximized = SDL_FALSE;
+        }
         rect.left = 0;
         rect.top = 0;
         rect.right = window->windowed.w;
@@ -803,6 +841,39 @@ int
 WIN_SetWindowHitTest(SDL_Window *window, SDL_bool enabled)
 {
     return 0;  /* just succeed, the real work is done elsewhere. */
+}
+
+int
+WIN_SetWindowOpacity(_THIS, SDL_Window * window, float opacity)
+{
+    const SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
+    const HWND hwnd = data->hwnd;
+    const LONG style = GetWindowLong(hwnd, GWL_EXSTYLE);
+
+    SDL_assert(style != 0);
+
+    if (opacity == 1.0f) {
+        /* want it fully opaque, just mark it unlayered if necessary. */
+        if (style & WS_EX_LAYERED) {
+            if (SetWindowLong(hwnd, GWL_EXSTYLE, style & ~WS_EX_LAYERED) == 0) {
+                return WIN_SetError("SetWindowLong()");
+            }
+        }
+    } else {
+        const BYTE alpha = (BYTE) ((int) (opacity * 255.0f));
+        /* want it transparent, mark it layered if necessary. */
+        if ((style & WS_EX_LAYERED) == 0) {
+            if (SetWindowLong(hwnd, GWL_EXSTYLE, style | WS_EX_LAYERED) == 0) {
+                return WIN_SetError("SetWindowLong()");
+            }
+        }
+
+        if (SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA) == 0) {
+            return WIN_SetError("SetLayeredWindowAttributes()");
+        }
+    }
+
+    return 0;
 }
 
 #endif /* SDL_VIDEO_DRIVER_WINDOWS */

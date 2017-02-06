@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -83,9 +83,9 @@
 /* if not compiling for iOS */
 #undef __MACOSX__
 #define __MACOSX__  1
-#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
-# error SDL for Mac OS X only supports deploying on 10.5 and above.
-#endif /* MAC_OS_X_VERSION_MIN_REQUIRED < 1050 */
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+# error SDL for Mac OS X only supports deploying on 10.6 and above.
+#endif /* MAC_OS_X_VERSION_MIN_REQUIRED < 1060 */
 #endif /* TARGET_OS_IPHONE */
 #endif /* defined(__APPLE__) */
 

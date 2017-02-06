@@ -74,7 +74,7 @@
 		56A6703818565E760007D20F /* SDL_dynapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 56A6703418565E760007D20F /* SDL_dynapi.h */; };
 		56C181DF17C44D5E00406AE3 /* SDL_filesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 56C181DE17C44D5E00406AE3 /* SDL_filesystem.h */; };
 		56C181E217C44D7A00406AE3 /* SDL_sysfilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C181E117C44D7A00406AE3 /* SDL_sysfilesystem.m */; };
-		56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.c in Sources */ = {isa = PBXBuildFile; fileRef = 56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */; };
+		56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EA86F913E9EC2B002E47EB /* SDL_coreaudio.m */; };
 		56EA86FC13E9EC2B002E47EB /* SDL_coreaudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */; };
 		56ED04E1118A8EE200A56AA6 /* SDL_power.c in Sources */ = {isa = PBXBuildFile; fileRef = 56ED04E0118A8EE200A56AA6 /* SDL_power.c */; };
 		56ED04E3118A8EFD00A56AA6 /* SDL_syspower.m in Sources */ = {isa = PBXBuildFile; fileRef = 56ED04E2118A8EFD00A56AA6 /* SDL_syspower.m */; };
@@ -143,9 +143,11 @@
 		AABCC3941640643D00AB8930 /* SDL_uikitmessagebox.h in Headers */ = {isa = PBXBuildFile; fileRef = AABCC3921640643D00AB8930 /* SDL_uikitmessagebox.h */; };
 		AABCC3951640643D00AB8930 /* SDL_uikitmessagebox.m in Sources */ = {isa = PBXBuildFile; fileRef = AABCC3931640643D00AB8930 /* SDL_uikitmessagebox.m */; };
 		AADA5B8F16CCAB7C00107CF7 /* SDL_bits.h in Headers */ = {isa = PBXBuildFile; fileRef = AADA5B8E16CCAB7C00107CF7 /* SDL_bits.h */; };
+		FA1DC2721C62BE65008F99A0 /* SDL_uikitclipboard.h in Headers */ = {isa = PBXBuildFile; fileRef = FA1DC2701C62BE65008F99A0 /* SDL_uikitclipboard.h */; };
+		FA1DC2731C62BE65008F99A0 /* SDL_uikitclipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DC2711C62BE65008F99A0 /* SDL_uikitclipboard.m */; };
 		FAB5981D1BB5C31500BE72C5 /* SDL_atomic.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FFAB8912E23B8D00BA343D /* SDL_atomic.c */; };
 		FAB5981E1BB5C31500BE72C5 /* SDL_spinlock.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FFAB8A12E23B8D00BA343D /* SDL_spinlock.c */; };
-		FAB5981F1BB5C31500BE72C5 /* SDL_coreaudio.c in Sources */ = {isa = PBXBuildFile; fileRef = 56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */; };
+		FAB5981F1BB5C31500BE72C5 /* SDL_coreaudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 56EA86F913E9EC2B002E47EB /* SDL_coreaudio.m */; };
 		FAB598211BB5C31500BE72C5 /* SDL_dummyaudio.c in Sources */ = {isa = PBXBuildFile; fileRef = FD99B91D0DD52EDC00FB1D6B /* SDL_dummyaudio.c */; };
 		FAB598231BB5C31500BE72C5 /* SDL_audio.c in Sources */ = {isa = PBXBuildFile; fileRef = FD99B9440DD52EDC00FB1D6B /* SDL_audio.c */; };
 		FAB598251BB5C31500BE72C5 /* SDL_audiocvt.c in Sources */ = {isa = PBXBuildFile; fileRef = FD99B9460DD52EDC00FB1D6B /* SDL_audiocvt.c */; };
@@ -238,6 +240,7 @@
 		FAB598BE1BB5C31600BE72C5 /* SDL_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 04BAC09B1300C1290055DE28 /* SDL_log.c */; };
 		FAB598BF1BB5C31600BE72C5 /* SDL.c in Sources */ = {isa = PBXBuildFile; fileRef = FD99B9D80DD52EDC00FB1D6B /* SDL.c */; };
 		FAD4F7021BA3C4E8008346CE /* SDL_sysjoystick_c.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD4F7011BA3C4E8008346CE /* SDL_sysjoystick_c.h */; };
+		FAFDF8C61D88D4530083E6F2 /* SDL_uikitclipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DC2711C62BE65008F99A0 /* SDL_uikitclipboard.m */; };
 		FD3F4A760DEA620800C5B771 /* SDL_getenv.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3F4A700DEA620800C5B771 /* SDL_getenv.c */; };
 		FD3F4A770DEA620800C5B771 /* SDL_iconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3F4A710DEA620800C5B771 /* SDL_iconv.c */; };
 		FD3F4A780DEA620800C5B771 /* SDL_malloc.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3F4A720DEA620800C5B771 /* SDL_malloc.c */; };
@@ -365,7 +368,7 @@
 		56A6703418565E760007D20F /* SDL_dynapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_dynapi.h; path = ../../src/dynapi/SDL_dynapi.h; sourceTree = "<group>"; };
 		56C181DE17C44D5E00406AE3 /* SDL_filesystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_filesystem.h; sourceTree = "<group>"; };
 		56C181E117C44D7A00406AE3 /* SDL_sysfilesystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDL_sysfilesystem.m; path = ../../src/filesystem/cocoa/SDL_sysfilesystem.m; sourceTree = "<group>"; };
-		56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_coreaudio.c; path = coreaudio/SDL_coreaudio.c; sourceTree = "<group>"; };
+		56EA86F913E9EC2B002E47EB /* SDL_coreaudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDL_coreaudio.m; path = coreaudio/SDL_coreaudio.m; sourceTree = "<group>"; };
 		56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_coreaudio.h; path = coreaudio/SDL_coreaudio.h; sourceTree = "<group>"; };
 		56ED04E0118A8EE200A56AA6 /* SDL_power.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_power.c; path = ../../src/power/SDL_power.c; sourceTree = SOURCE_ROOT; };
 		56ED04E2118A8EFD00A56AA6 /* SDL_syspower.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDL_syspower.m; path = ../../src/power/uikit/SDL_syspower.m; sourceTree = SOURCE_ROOT; };
@@ -434,6 +437,8 @@
 		AABCC3921640643D00AB8930 /* SDL_uikitmessagebox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitmessagebox.h; sourceTree = "<group>"; };
 		AABCC3931640643D00AB8930 /* SDL_uikitmessagebox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitmessagebox.m; sourceTree = "<group>"; };
 		AADA5B8E16CCAB7C00107CF7 /* SDL_bits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_bits.h; sourceTree = "<group>"; };
+		FA1DC2701C62BE65008F99A0 /* SDL_uikitclipboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitclipboard.h; sourceTree = "<group>"; };
+		FA1DC2711C62BE65008F99A0 /* SDL_uikitclipboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitclipboard.m; sourceTree = "<group>"; };
 		FAB598141BB5C1B100BE72C5 /* libSDL2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD4F7011BA3C4E8008346CE /* SDL_sysjoystick_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_sysjoystick_c.h; sourceTree = "<group>"; };
 		FD0BBFEF0E3933DD00D833B1 /* SDL_uikitview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitview.h; sourceTree = "<group>"; };
@@ -467,7 +472,6 @@
 		FD99B9440DD52EDC00FB1D6B /* SDL_audio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_audio.c; sourceTree = "<group>"; };
 		FD99B9450DD52EDC00FB1D6B /* SDL_audio_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_audio_c.h; sourceTree = "<group>"; };
 		FD99B9460DD52EDC00FB1D6B /* SDL_audiocvt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_audiocvt.c; sourceTree = "<group>"; };
-		FD99B9490DD52EDC00FB1D6B /* SDL_audiomem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_audiomem.h; sourceTree = "<group>"; };
 		FD99B94A0DD52EDC00FB1D6B /* SDL_audiotypecvt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_audiotypecvt.c; sourceTree = "<group>"; };
 		FD99B94B0DD52EDC00FB1D6B /* SDL_mixer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_mixer.c; sourceTree = "<group>"; };
 		FD99B9520DD52EDC00FB1D6B /* SDL_sysaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_sysaudio.h; sourceTree = "<group>"; };
@@ -679,7 +683,7 @@
 		56EA86F813E9EBF9002E47EB /* coreaudio */ = {
 			isa = PBXGroup;
 			children = (
-				56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */,
+				56EA86F913E9EC2B002E47EB /* SDL_coreaudio.m */,
 				56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */,
 			);
 			name = coreaudio;
@@ -744,6 +748,8 @@
 				FDC261780E3A3FC8001C4554 /* keyinfotable.h */,
 				FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */,
 				FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */,
+				FA1DC2701C62BE65008F99A0 /* SDL_uikitclipboard.h */,
+				FA1DC2711C62BE65008F99A0 /* SDL_uikitclipboard.m */,
 				FD689F0C0E26E5D900F90B21 /* SDL_uikitevents.h */,
 				FD689F0D0E26E5D900F90B21 /* SDL_uikitevents.m */,
 				AABCC3921640643D00AB8930 /* SDL_uikitmessagebox.h */,
@@ -885,7 +891,6 @@
 				FD99B9440DD52EDC00FB1D6B /* SDL_audio.c */,
 				FD99B9450DD52EDC00FB1D6B /* SDL_audio_c.h */,
 				FD99B9460DD52EDC00FB1D6B /* SDL_audiocvt.c */,
-				FD99B9490DD52EDC00FB1D6B /* SDL_audiomem.h */,
 				FD99B94A0DD52EDC00FB1D6B /* SDL_audiotypecvt.c */,
 				FD99B94B0DD52EDC00FB1D6B /* SDL_mixer.c */,
 				FD99B9520DD52EDC00FB1D6B /* SDL_sysaudio.h */,
@@ -1090,6 +1095,7 @@
 				04F7808012FB751400FC43C0 /* SDL_drawpoint.h in Headers */,
 				04F7808412FB753F00FC43C0 /* SDL_nullframebuffer_c.h in Headers */,
 				0442EC5012FE1C1E004C9285 /* SDL_render_sw_c.h in Headers */,
+				FA1DC2721C62BE65008F99A0 /* SDL_uikitclipboard.h in Headers */,
 				0402A85A12FE70C600CECEE3 /* SDL_shaders_gles2.h in Headers */,
 				04BAC09C1300C1290055DE28 /* SDL_assert_c.h in Headers */,
 				56EA86FC13E9EC2B002E47EB /* SDL_coreaudio.h in Headers */,
@@ -1197,7 +1203,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					FAB598131BB5C1B100BE72C5 = {
 						CreatedOnToolsVersion = 7.1;
@@ -1249,13 +1255,14 @@
 			files = (
 				FAB5981D1BB5C31500BE72C5 /* SDL_atomic.c in Sources */,
 				FAB5981E1BB5C31500BE72C5 /* SDL_spinlock.c in Sources */,
-				FAB5981F1BB5C31500BE72C5 /* SDL_coreaudio.c in Sources */,
+				FAB5981F1BB5C31500BE72C5 /* SDL_coreaudio.m in Sources */,
 				FAB598211BB5C31500BE72C5 /* SDL_dummyaudio.c in Sources */,
 				FAB598231BB5C31500BE72C5 /* SDL_audio.c in Sources */,
 				FAB598251BB5C31500BE72C5 /* SDL_audiocvt.c in Sources */,
 				FAB598271BB5C31500BE72C5 /* SDL_audiotypecvt.c in Sources */,
 				FAB598281BB5C31500BE72C5 /* SDL_mixer.c in Sources */,
 				FAB5982A1BB5C31500BE72C5 /* SDL_wave.c in Sources */,
+				FAFDF8C61D88D4530083E6F2 /* SDL_uikitclipboard.m in Sources */,
 				FAB5982C1BB5C31500BE72C5 /* SDL_cpuinfo.c in Sources */,
 				FAB5982F1BB5C31500BE72C5 /* SDL_dynapi.c in Sources */,
 				FAB598361BB5C31500BE72C5 /* SDL_clipboardevents.c in Sources */,
@@ -1357,6 +1364,7 @@
 				FD65266A0DE8FCDD002AD96B /* SDL_audiotypecvt.c in Sources */,
 				FD65266B0DE8FCDD002AD96B /* SDL_mixer.c in Sources */,
 				FD65266F0DE8FCDD002AD96B /* SDL_wave.c in Sources */,
+				FA1DC2731C62BE65008F99A0 /* SDL_uikitclipboard.m in Sources */,
 				FD6526700DE8FCDD002AD96B /* SDL_cpuinfo.c in Sources */,
 				FD6526710DE8FCDD002AD96B /* SDL_events.c in Sources */,
 				FD6526720DE8FCDD002AD96B /* SDL_keyboard.c in Sources */,
@@ -1433,7 +1441,7 @@
 				0402A85812FE70C600CECEE3 /* SDL_render_gles2.c in Sources */,
 				0402A85912FE70C600CECEE3 /* SDL_shaders_gles2.c in Sources */,
 				04BAC09D1300C1290055DE28 /* SDL_log.c in Sources */,
-				56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.c in Sources */,
+				56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.m in Sources */,
 				93CB792613FC5F5300BD3E05 /* SDL_uikitviewcontroller.m in Sources */,
 				AA628ADB159369E3005138DD /* SDL_rotate.c in Sources */,
 				AA126AD51617C5E7005ABC8F /* SDL_uikitmodes.m in Sources */,
@@ -1510,8 +1518,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -1536,7 +1546,6 @@
 				PRODUCT_NAME = SDL2;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -1555,6 +1564,7 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1565,6 +1575,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1576,7 +1587,6 @@
 				PRODUCT_NAME = SDL2;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;

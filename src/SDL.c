@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -115,6 +115,16 @@ SDL_InitSubSystem(Uint32 flags)
     /* Clear the error message */
     SDL_ClearError();
 
+    if ((flags & SDL_INIT_GAMECONTROLLER)) {
+        /* game controller implies joystick */
+        flags |= SDL_INIT_JOYSTICK;
+    }
+
+    if ((flags & (SDL_INIT_VIDEO|SDL_INIT_JOYSTICK))) {
+        /* video or joystick implies events */
+        flags |= SDL_INIT_EVENTS;
+    }
+
 #if SDL_VIDEO_DRIVER_WINDOWS
 	if ((flags & (SDL_INIT_HAPTIC|SDL_INIT_JOYSTICK))) {
 		if (SDL_HelperWindowCreate() < 0) {
@@ -126,16 +136,6 @@ SDL_InitSubSystem(Uint32 flags)
 #if !SDL_TIMERS_DISABLED
     SDL_TicksInit();
 #endif
-
-    if ((flags & SDL_INIT_GAMECONTROLLER)) {
-        /* game controller implies joystick */
-        flags |= SDL_INIT_JOYSTICK;
-    }
-
-    if ((flags & (SDL_INIT_VIDEO|SDL_INIT_JOYSTICK))) {
-        /* video or joystick implies events */
-        flags |= SDL_INIT_EVENTS;
-    }
 
     /* Initialize the event subsystem */
     if ((flags & SDL_INIT_EVENTS)) {

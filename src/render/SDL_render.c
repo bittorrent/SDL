@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -158,7 +158,8 @@ SDL_RendererEventWatch(void *userdata, SDL_Event *event)
                 }
             } else if (event->window.event == SDL_WINDOWEVENT_MINIMIZED) {
                 renderer->hidden = SDL_TRUE;
-            } else if (event->window.event == SDL_WINDOWEVENT_RESTORED) {
+            } else if (event->window.event == SDL_WINDOWEVENT_RESTORED || 
+                       event->window.event == SDL_WINDOWEVENT_MAXIMIZED) {
                 if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_HIDDEN)) {
                     renderer->hidden = SDL_FALSE;
                 }
@@ -233,12 +234,11 @@ SDL_CreateRenderer(SDL_Window * window, int index, Uint32 flags)
         return NULL;
     }
 
-    hint = SDL_GetHint(SDL_HINT_RENDER_VSYNC);
-    if (hint) {
-        if (*hint == '0') {
-            flags &= ~SDL_RENDERER_PRESENTVSYNC;
-        } else {
+    if (SDL_GetHint(SDL_HINT_RENDER_VSYNC)) {
+        if (SDL_GetHintBoolean(SDL_HINT_RENDER_VSYNC, SDL_TRUE)) {
             flags |= SDL_RENDERER_PRESENTVSYNC;
+        } else {
+            flags &= ~SDL_RENDERER_PRESENTVSYNC;
         }
     }
 
@@ -1105,6 +1105,8 @@ SDL_SetRenderTarget(SDL_Renderer *renderer, SDL_Texture *texture)
         renderer->viewport.y = 0;
         renderer->viewport.w = texture->w;
         renderer->viewport.h = texture->h;
+        SDL_zero(renderer->clip_rect);
+        renderer->clipping_enabled = SDL_FALSE;
         renderer->scale.x = 1.0f;
         renderer->scale.y = 1.0f;
         renderer->logical_w = texture->w;
@@ -1143,6 +1145,9 @@ UpdateLogicalSize(SDL_Renderer *renderer)
     float scale;
     SDL_Rect viewport;
 
+    if (!renderer->logical_w || !renderer->logical_h) {
+        return 0;
+    }
     if (SDL_GetRendererOutputSize(renderer, &w, &h) < 0) {
         return -1;
     }
@@ -1153,7 +1158,19 @@ UpdateLogicalSize(SDL_Renderer *renderer)
     /* Clear the scale because we're setting viewport in output coordinates */
     SDL_RenderSetScale(renderer, 1.0f, 1.0f);
 
-    if (SDL_fabs(want_aspect-real_aspect) < 0.0001) {
+    if (renderer->integer_scale) {
+        if (want_aspect > real_aspect) {
+            scale = (float)(w / renderer->logical_w);
+        } else {
+            scale = (float)(h / renderer->logical_h);
+        }
+        viewport.w = (int)SDL_ceil(renderer->logical_w * scale);
+        viewport.x = (w - viewport.w) / 2;
+        viewport.h = (int)SDL_ceil(renderer->logical_h * scale);
+        viewport.y = (h - viewport.h) / 2;
+
+        SDL_RenderSetViewport(renderer, &viewport);
+    } else if (SDL_fabs(want_aspect-real_aspect) < 0.0001) {
         /* The aspect ratios are the same, just scale appropriately */
         scale = (float)w / renderer->logical_w;
         SDL_RenderSetViewport(renderer, NULL);
@@ -1212,6 +1229,24 @@ SDL_RenderGetLogicalSize(SDL_Renderer * renderer, int *w, int *h)
     if (h) {
         *h = renderer->logical_h;
     }
+}
+
+int
+SDL_RenderSetIntegerScale(SDL_Renderer * renderer, SDL_bool enable)
+{
+    CHECK_RENDERER_MAGIC(renderer, -1);
+
+    renderer->integer_scale = enable;
+
+    return UpdateLogicalSize(renderer);
+}
+
+SDL_bool
+SDLCALL SDL_RenderGetIntegerScale(SDL_Renderer * renderer)
+{
+    CHECK_RENDERER_MAGIC(renderer, SDL_FALSE);
+
+    return renderer->integer_scale;
 }
 
 int
@@ -1424,6 +1459,7 @@ SDL_RenderDrawPoints(SDL_Renderer * renderer,
     if (count < 1) {
         return 0;
     }
+
     /* Don't draw while we're hidden */
     if (renderer->hidden) {
         return 0;
@@ -1533,6 +1569,7 @@ SDL_RenderDrawLines(SDL_Renderer * renderer,
     if (count < 2) {
         return 0;
     }
+
     /* Don't draw while we're hidden */
     if (renderer->hidden) {
         return 0;
@@ -1606,6 +1643,7 @@ SDL_RenderDrawRects(SDL_Renderer * renderer,
     if (renderer->hidden) {
         return 0;
     }
+
     for (i = 0; i < count; ++i) {
         if (SDL_RenderDrawRect(renderer, &rects[i]) < 0) {
             return -1;
@@ -1647,6 +1685,7 @@ SDL_RenderFillRects(SDL_Renderer * renderer,
     if (count < 1) {
         return 0;
     }
+
     /* Don't draw while we're hidden */
     if (renderer->hidden) {
         return 0;
@@ -1685,6 +1724,11 @@ SDL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
         return SDL_SetError("Texture was not created with this renderer");
     }
 
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
     real_srcrect.x = 0;
     real_srcrect.y = 0;
     real_srcrect.w = texture->w;
@@ -1709,11 +1753,6 @@ SDL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
         texture = texture->native;
     }
 
-    /* Don't draw while we're hidden */
-    if (renderer->hidden) {
-        return 0;
-    }
-
     frect.x = real_dstrect.x * renderer->scale.x;
     frect.y = real_dstrect.y * renderer->scale.y;
     frect.w = real_dstrect.w * renderer->scale.x;
@@ -1734,7 +1773,7 @@ SDL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
     SDL_FRect frect;
     SDL_FPoint fcenter;
 
-    if (flip == SDL_FLIP_NONE && angle == 0) { /* fast path when we don't need rotation or flipping */
+    if (flip == SDL_FLIP_NONE && (int)(angle/360) == angle/360) { /* fast path when we don't need rotation or flipping */
         return SDL_RenderCopy(renderer, texture, srcrect, dstrect);
     }
 
@@ -1746,6 +1785,11 @@ SDL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
     }
     if (!renderer->RenderCopyEx) {
         return SDL_SetError("Renderer does not support RenderCopyEx");
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
     }
 
     real_srcrect.x = 0;
@@ -1771,8 +1815,9 @@ SDL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
         texture = texture->native;
     }
 
-    if(center) real_center = *center;
-    else {
+    if (center) {
+        real_center = *center;
+    } else {
         real_center.x = real_dstrect.w/2;
         real_center.y = real_dstrect.h/2;
     }

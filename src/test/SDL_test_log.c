@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -55,12 +55,11 @@ char *SDLTest_TimestampToString(const time_t timestamp)
     time_t copy;
     static char buffer[64];
     struct tm *local;
-    const char *fmt = "%x %X";
 
     SDL_memset(buffer, 0, sizeof(buffer));
     copy = timestamp;
     local = localtime(&copy);
-    strftime(buffer, sizeof(buffer), fmt, local);
+    strftime(buffer, sizeof(buffer), "%x %X", local);
 
     return buffer;
 }

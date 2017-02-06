@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,11 +26,8 @@
 #define SCREEN_HEIGHT   480
 #else
 #define SCREEN_WIDTH    512
-#define SCREEN_HEIGHT   317
+#define SCREEN_HEIGHT   320
 #endif
-
-#define MAP_WIDTH 512
-#define MAP_HEIGHT 317
 
 #define MARKER_BUTTON 1
 #define MARKER_AXIS 2
@@ -47,7 +44,7 @@ typedef struct MappingStep
 
 
 SDL_Texture *
-LoadTexture(SDL_Renderer *renderer, char *file, SDL_bool transparent)
+LoadTexture(SDL_Renderer *renderer, const char *file, SDL_bool transparent)
 {
     SDL_Surface *temp;
     SDL_Texture *texture;
@@ -226,13 +223,13 @@ WatchJoystick(SDL_Joystick * joystick)
             SDL_RenderCopy(screen, background, NULL, NULL);
             SDL_SetTextureAlphaMod(marker, alpha);
             SDL_SetTextureColorMod(marker, 10, 255, 21);
-            SDL_RenderCopyEx(screen, marker, NULL, &dst, step->angle, NULL, 0);
+            SDL_RenderCopyEx(screen, marker, NULL, &dst, step->angle, NULL, SDL_FLIP_NONE);
             SDL_RenderPresent(screen);
             
             if (SDL_PollEvent(&event)) {
                 switch (event.type) {
                 case SDL_JOYAXISMOTION:
-                    if (event.jaxis.value > 20000 || event.jaxis.value < -20000) {
+                    if ((event.jaxis.value > 20000 || event.jaxis.value < -20000) && event.jaxis.value != -32768) {
                         for (_s = 0; _s < s; _s++) {
                             if (steps[_s].axis == event.jaxis.axis) {
                                 break;
@@ -344,7 +341,7 @@ main(int argc, char *argv[])
     SDL_Joystick *joystick;
 
     /* Enable standard application logging */
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);	
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Initialize SDL (Note: video is required to start event loop) */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {

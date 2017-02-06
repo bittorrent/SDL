@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -190,11 +190,13 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
         SDL_bool isLandscape = UIKit_IsDisplayLandscape(data.uiscreen);
         SDL_bool addRotation = (data.uiscreen == [UIScreen mainScreen]);
         CGFloat scale = data.uiscreen.scale;
+        NSArray *availableModes = nil;
 
 #if TARGET_OS_TV
-        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomTV) {
-            addRotation = SDL_FALSE;
-        }
+        addRotation = SDL_FALSE;
+        availableModes = @[data.uiscreen.currentMode];
+#else
+        availableModes = data.uiscreen.availableModes;
 #endif
 
 #ifdef __IPHONE_8_0
@@ -205,8 +207,7 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
         }
 #endif
 
-#if !TARGET_OS_TV
-        for (UIScreenMode *uimode in data.uiscreen.availableModes) {
+        for (UIScreenMode *uimode in availableModes) {
             /* The size of a UIScreenMode is in pixels, but we deal exclusively
              * in points (except in SDL_GL_GetDrawableSize.) */
             int w = (int)(uimode.size.width / scale);
@@ -221,7 +222,6 @@ UIKit_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
 
             UIKit_AddDisplayMode(display, w, h, uimode, addRotation);
         }
-#endif
     }
 }
 
@@ -230,9 +230,9 @@ UIKit_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
 {
     @autoreleasepool {
         SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
+
 #if !TARGET_OS_TV
         SDL_DisplayModeData *modedata = (__bridge SDL_DisplayModeData *)mode->driverdata;
-
         [data.uiscreen setCurrentMode:modedata.uiscreenmode];
 #endif
 
@@ -250,6 +250,36 @@ UIKit_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
                 }
             }
         }
+    }
+
+    return 0;
+}
+
+int
+UIKit_GetDisplayUsableBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect)
+{
+    @autoreleasepool {
+        int displayIndex = (int) (display - _this->displays);
+        SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
+
+        /* the default function iterates displays to make a fake offset,
+         as if all the displays were side-by-side, which is fine for iOS. */
+        if (SDL_GetDisplayBounds(displayIndex, rect) < 0) {
+            return -1;
+        }
+
+        CGRect frame = data.uiscreen.bounds;
+
+#if !TARGET_OS_TV
+        if (!UIKit_IsSystemVersionAtLeast(7.0)) {
+            frame = [data.uiscreen applicationFrame];
+        }
+#endif
+
+        rect->x += frame.origin.x;
+        rect->y += frame.origin.y;
+        rect->w = frame.size.width;
+        rect->h = frame.size.height;
     }
 
     return 0;

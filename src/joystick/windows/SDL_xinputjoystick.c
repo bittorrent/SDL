@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -40,8 +40,7 @@ SDL_XInputUseOldJoystickMapping()
 {
     static int s_XInputUseOldJoystickMapping = -1;
     if (s_XInputUseOldJoystickMapping < 0) {
-        const char *hint = SDL_GetHint(SDL_HINT_XINPUT_USE_OLD_JOYSTICK_MAPPING);
-        s_XInputUseOldJoystickMapping = (hint && *hint == '1') ? 1 : 0;
+        s_XInputUseOldJoystickMapping = SDL_GetHintBoolean(SDL_HINT_XINPUT_USE_OLD_JOYSTICK_MAPPING, SDL_FALSE);
     }
     return (s_XInputUseOldJoystickMapping > 0);
 }
@@ -54,10 +53,7 @@ SDL_bool SDL_XINPUT_Enabled(void)
 int
 SDL_XINPUT_JoystickInit(void)
 {
-    const char *env = SDL_GetHint(SDL_HINT_XINPUT_ENABLED);
-    if (env && !SDL_atoi(env)) {
-        s_bXInputEnabled = SDL_FALSE;
-    }
+    s_bXInputEnabled = SDL_GetHintBoolean(SDL_HINT_XINPUT_ENABLED, SDL_TRUE);
 
     if (s_bXInputEnabled && WIN_LoadXInputDLL() < 0) {
         s_bXInputEnabled = SDL_FALSE;  /* oh well. */
@@ -222,7 +218,7 @@ SDL_XINPUT_JoystickOpen(SDL_Joystick * joystick, JoyStick_DeviceData *joystickde
 }
 
 static void 
-UpdateXInputJoystickBatteryInformation(SDL_Joystick * joystick, XINPUT_BATTERY_INFORMATION *pBatteryInformation)
+UpdateXInputJoystickBatteryInformation(SDL_Joystick * joystick, XINPUT_BATTERY_INFORMATION_EX *pBatteryInformation)
 {
     if ( pBatteryInformation->BatteryType != BATTERY_TYPE_UNKNOWN )
     {
@@ -253,7 +249,7 @@ UpdateXInputJoystickBatteryInformation(SDL_Joystick * joystick, XINPUT_BATTERY_I
 }
 
 static void
-UpdateXInputJoystickState_OLD(SDL_Joystick * joystick, XINPUT_STATE_EX *pXInputState, XINPUT_BATTERY_INFORMATION *pBatteryInformation)
+UpdateXInputJoystickState_OLD(SDL_Joystick * joystick, XINPUT_STATE_EX *pXInputState, XINPUT_BATTERY_INFORMATION_EX *pBatteryInformation)
 {
     static WORD s_XInputButtons[] = {
         XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT,
@@ -280,7 +276,7 @@ UpdateXInputJoystickState_OLD(SDL_Joystick * joystick, XINPUT_STATE_EX *pXInputS
 }
 
 static void
-UpdateXInputJoystickState(SDL_Joystick * joystick, XINPUT_STATE_EX *pXInputState, XINPUT_BATTERY_INFORMATION *pBatteryInformation)
+UpdateXInputJoystickState(SDL_Joystick * joystick, XINPUT_STATE_EX *pXInputState, XINPUT_BATTERY_INFORMATION_EX *pBatteryInformation)
 {
     static WORD s_XInputButtons[] = {
         XINPUT_GAMEPAD_A, XINPUT_GAMEPAD_B, XINPUT_GAMEPAD_X, XINPUT_GAMEPAD_Y,
@@ -325,7 +321,7 @@ SDL_XINPUT_JoystickUpdate(SDL_Joystick * joystick)
 {
     HRESULT result;
     XINPUT_STATE_EX XInputState;
-    XINPUT_BATTERY_INFORMATION XBatteryInformation;
+    XINPUT_BATTERY_INFORMATION_EX XBatteryInformation;
 
     if (!XINPUTGETSTATE)
         return;
@@ -376,7 +372,7 @@ SDL_SYS_IsXInputGamepad_DeviceIndex(int device_index)
     for (index = device_index; index > 0; index--)
         device = device->pNext;
 
-    return (device->SubType == XINPUT_DEVSUBTYPE_GAMEPAD);
+    return device->bXInputDevice;
 }
 
 #else /* !SDL_JOYSTICK_XINPUT */

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -33,6 +33,7 @@
 #include "SDL_uikitvideo.h"
 #include "SDL_uikitmodes.h"
 #include "SDL_uikitwindow.h"
+#include "SDL_uikitopengles.h"
 
 #if SDL_IPHONE_KEYBOARD
 #include "keyinfotable.h"
@@ -125,6 +126,9 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 {
     /* Don't run the game loop while a messagebox is up */
     if (!UIKit_ShowingMessageBox()) {
+        /* See the comment in the function definition. */
+        UIKit_GL_RestoreCurrentContext();
+
         animationCallback(animationCallbackParam);
     }
 }
@@ -247,6 +251,7 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
+    SDL_StopTextInput();
     [self setKeyboardHeight:0];
 }
 

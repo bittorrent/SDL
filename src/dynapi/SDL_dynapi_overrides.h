@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -445,6 +445,8 @@
 #define SDL_iconv_close SDL_iconv_close_REAL
 #define SDL_iconv SDL_iconv_REAL
 #define SDL_iconv_string SDL_iconv_string_REAL
+#define SDL_CreateRGBSurfaceWithFormat SDL_CreateRGBSurfaceWithFormat_REAL
+#define SDL_CreateRGBSurfaceWithFormatFrom SDL_CreateRGBSurfaceWithFormatFrom_REAL
 #define SDL_CreateRGBSurface SDL_CreateRGBSurface_REAL
 #define SDL_CreateRGBSurfaceFrom SDL_CreateRGBSurfaceFrom_REAL
 #define SDL_FreeSurface SDL_FreeSurface_REAL
@@ -595,3 +597,18 @@
 #define SDL_GetGrabbedWindow SDL_GetGrabbedWindow_REAL
 #define SDL_SetWindowsMessageHook SDL_SetWindowsMessageHook_REAL
 #define SDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel_REAL
+#define SDL_GameControllerFromInstanceID SDL_GameControllerFromInstanceID_REAL
+#define SDL_JoystickFromInstanceID SDL_JoystickFromInstanceID_REAL
+#define SDL_GetDisplayUsableBounds SDL_GetDisplayUsableBounds_REAL
+#define SDL_GetWindowBordersSize SDL_GetWindowBordersSize_REAL
+#define SDL_SetWindowOpacity SDL_SetWindowOpacity_REAL
+#define SDL_GetWindowOpacity SDL_GetWindowOpacity_REAL
+#define SDL_SetWindowInputFocus SDL_SetWindowInputFocus_REAL
+#define SDL_SetWindowModalFor SDL_SetWindowModalFor_REAL
+#define SDL_RenderSetIntegerScale SDL_RenderSetIntegerScale_REAL
+#define SDL_RenderGetIntegerScale SDL_RenderGetIntegerScale_REAL
+#define SDL_DequeueAudio SDL_DequeueAudio_REAL
+#define SDL_SetWindowResizable SDL_SetWindowResizable_REAL
+#define SDL_CreateRGBSurfaceWithFormat SDL_CreateRGBSurfaceWithFormat_REAL
+#define SDL_CreateRGBSurfaceWithFormatFrom SDL_CreateRGBSurfaceWithFormatFrom_REAL
+#define SDL_GetHintBoolean SDL_GetHintBoolean_REAL

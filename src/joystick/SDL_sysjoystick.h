@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -36,6 +36,7 @@ struct _SDL_Joystick
 
     int naxes;                  /* Number of axis controls on the joystick */
     Sint16 *axes;               /* Current axis states */
+    Sint16 *axes_zero;          /* Zero point on the axis (-32768 for triggers) */
 
     int nhats;                  /* Number of hats on the joystick */
     Uint8 *hats;                /* Current hat states */

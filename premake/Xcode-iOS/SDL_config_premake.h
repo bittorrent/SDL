@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -150,8 +150,8 @@
 #ifndef SDL_VIDEO_RENDER_OGL_ES2
 #define SDL_VIDEO_RENDER_OGL_ES2 1
 #endif
-#ifndef SDL_LOADSO_DISABLED
-#define SDL_LOADSO_DISABLED 1
+#ifndef SDL_LOADSO_DLOPEN
+#define SDL_LOADSO_DLOPEN 1
 #endif
 #ifndef SDL_HAPTIC_DISABLED
 #define SDL_HAPTIC_DISABLED 1

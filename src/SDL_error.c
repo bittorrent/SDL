@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -116,6 +116,10 @@ SDL_SetError(SDL_PRINTF_FORMAT_STRING const char *fmt, ...)
     return -1;
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#endif
 /* This function has a bit more overhead than most error functions
    so that it supports internationalization and thread-safe errors.
 */
@@ -216,6 +220,9 @@ SDL_GetErrorMsg(char *errstr, int maxlen)
     }
     return (errstr);
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 /* Available for backwards compatibility */
 const char *

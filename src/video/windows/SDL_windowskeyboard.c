@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -102,6 +102,10 @@ WIN_InitKeyboard(_THIS)
     SDL_SetScancodeName(SDL_SCANCODE_APPLICATION, "Menu");
     SDL_SetScancodeName(SDL_SCANCODE_LGUI, "Left Windows");
     SDL_SetScancodeName(SDL_SCANCODE_RGUI, "Right Windows");
+
+    /* Are system caps/num/scroll lock active? Set our state to match. */
+    SDL_ToggleModState(KMOD_CAPS, (GetKeyState(VK_CAPITAL) & 0x0001) != 0);
+    SDL_ToggleModState(KMOD_NUM, (GetKeyState(VK_NUMLOCK) & 0x0001) != 0);
 }
 
 void
@@ -124,7 +128,7 @@ WIN_UpdateKeymap()
         /* If this key is one of the non-mappable keys, ignore it */
         /* Not mapping numbers fixes the French layout, giving numeric keycodes for the number keys, which is the expected behavior */
         if ((keymap[scancode] & SDLK_SCANCODE_MASK) ||
-			/*  scancode == SDL_SCANCODE_GRAVE || */ /* Uncomment this line to re-enable the behavior of not mapping the "`"(grave) key to the users actual keyboard layout */
+            /*  scancode == SDL_SCANCODE_GRAVE || */ /* Uncomment this line to re-enable the behavior of not mapping the "`"(grave) key to the users actual keyboard layout */
             (scancode >= SDL_SCANCODE_1 && scancode <= SDL_SCANCODE_0) ) {
             continue;
         }
@@ -154,10 +158,46 @@ WIN_QuitKeyboard(_THIS)
 }
 
 void
+WIN_ResetDeadKeys()
+{
+    /*
+    if a deadkey has been typed, but not the next character (which the deadkey might modify), 
+    this tries to undo the effect pressing the deadkey.
+    see: http://archives.miloush.net/michkap/archive/2006/09/10/748775.html
+    */
+    BYTE keyboardState[256];
+    WCHAR buffer[16];
+    int keycode, scancode, result, i;
+
+    GetKeyboardState(keyboardState);
+
+    keycode = VK_SPACE;
+    scancode = MapVirtualKey(keycode, MAPVK_VK_TO_VSC);
+    if (scancode == 0) {
+        /* the keyboard doesn't have this key */
+        return;
+    }
+
+    for (i = 0; i < 5; i++) {
+        result = ToUnicode(keycode, scancode, keyboardState, (LPWSTR)buffer, 16, 0);
+        if (result > 0) {
+            /* success */
+            return;
+        }
+    }
+}
+
+void
 WIN_StartTextInput(_THIS)
 {
 #ifndef SDL_DISABLE_WINDOWS_IME
-    SDL_Window *window = SDL_GetKeyboardFocus();
+    SDL_Window *window;
+#endif
+
+    WIN_ResetDeadKeys();
+
+#ifndef SDL_DISABLE_WINDOWS_IME
+    window = SDL_GetKeyboardFocus();
     if (window) {
         HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
         SDL_VideoData *videodata = (SDL_VideoData *)_this->driverdata;
@@ -172,7 +212,13 @@ void
 WIN_StopTextInput(_THIS)
 {
 #ifndef SDL_DISABLE_WINDOWS_IME
-    SDL_Window *window = SDL_GetKeyboardFocus();
+    SDL_Window *window;
+#endif
+
+    WIN_ResetDeadKeys();
+
+#ifndef SDL_DISABLE_WINDOWS_IME
+    window = SDL_GetKeyboardFocus();
     if (window) {
         HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
         SDL_VideoData *videodata = (SDL_VideoData *)_this->driverdata;
@@ -402,7 +448,7 @@ IME_GetReadingString(SDL_VideoData *videodata, HWND hwnd)
     INT err = 0;
     BOOL vertical = FALSE;
     UINT maxuilen = 0;
-	static OSVERSIONINFOA osversion;
+    static OSVERSIONINFOA osversion;
 
     if (videodata->ime_uiless)
         return;

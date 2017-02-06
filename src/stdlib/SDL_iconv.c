@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -30,7 +30,8 @@
 #include "SDL_stdinc.h"
 #include "SDL_endian.h"
 
-#ifdef HAVE_ICONV
+#if defined(HAVE_ICONV) && defined(HAVE_ICONV_H)
+#include <iconv.h>
 
 /* Depending on which standard the iconv() was implemented with,
    iconv() may or may not use const char ** for the inbuf param.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -29,7 +29,7 @@
 #define SCREEN_HEIGHT    320
 #else
 #define SCREEN_WIDTH    512
-#define SCREEN_HEIGHT   317
+#define SCREEN_HEIGHT   320
 #endif
 
 /* This is indexed by SDL_GameControllerButton. */
@@ -67,7 +67,7 @@ SDL_bool done = SDL_FALSE;
 SDL_Texture *background, *button, *axis;
 
 static SDL_Texture *
-LoadTexture(SDL_Renderer *renderer, char *file, SDL_bool transparent)
+LoadTexture(SDL_Renderer *renderer, const char *file, SDL_bool transparent)
 {
     SDL_Surface *temp = NULL;
     SDL_Texture *texture = NULL;
@@ -129,7 +129,7 @@ loop(void *arg)
     for (i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i) {
         if (SDL_GameControllerGetButton(gamecontroller, (SDL_GameControllerButton)i) == SDL_PRESSED) {
             const SDL_Rect dst = { button_positions[i].x, button_positions[i].y, 50, 50 };
-            SDL_RenderCopyEx(screen, button, NULL, &dst, 0, NULL, 0);
+            SDL_RenderCopyEx(screen, button, NULL, &dst, 0, NULL, SDL_FLIP_NONE);
         }
     }
 
@@ -139,11 +139,11 @@ loop(void *arg)
         if (value < -deadzone) {
             const SDL_Rect dst = { axis_positions[i].x, axis_positions[i].y, 50, 50 };
             const double angle = axis_positions[i].angle;
-            SDL_RenderCopyEx(screen, axis, NULL, &dst, angle, NULL, 0);
+            SDL_RenderCopyEx(screen, axis, NULL, &dst, angle, NULL, SDL_FLIP_NONE);
         } else if (value > deadzone) {
             const SDL_Rect dst = { axis_positions[i].x, axis_positions[i].y, 50, 50 };
             const double angle = axis_positions[i].angle + 180.0;
-            SDL_RenderCopyEx(screen, axis, NULL, &dst, angle, NULL, 0);
+            SDL_RenderCopyEx(screen, axis, NULL, &dst, angle, NULL, SDL_FLIP_NONE);
         }
     }
 
@@ -181,6 +181,8 @@ WatchGameController(SDL_GameController * gamecontroller)
     window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
                               SCREEN_HEIGHT, 0);
+    SDL_free(title);
+    title = NULL;
     if (window == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window: %s\n", SDL_GetError());
         return SDL_FALSE;
@@ -247,7 +249,7 @@ main(int argc, char *argv[])
     SDL_GameController *gamecontroller;
 
     /* Enable standard application logging */
-	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Initialize SDL (Note: video is required to start event loop) */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER ) < 0) {
@@ -284,13 +286,18 @@ main(int argc, char *argv[])
         SDL_Event event;
         int device = atoi(argv[1]);
         if (device >= SDL_NumJoysticks()) {
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%i is an invalid joystick index.\n", device);
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%i is an invalid joystick index.\n", device);
             retcode = 1;
         } else {
             SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(device),
                                       guid, sizeof (guid));
             SDL_Log("Attempting to open device %i, guid %s\n", device, guid);
             gamecontroller = SDL_GameControllerOpen(device);
+
+            if (gamecontroller != NULL) {
+                SDL_assert(SDL_GameControllerFromInstanceID(SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(gamecontroller))) == gamecontroller);
+            }
+
             while (keepGoing) {
                 if (gamecontroller == NULL) {
                     if (!reportederror) {
@@ -316,6 +323,9 @@ main(int argc, char *argv[])
                         keepGoing = SDL_FALSE;
                     } else if (event.type == SDL_CONTROLLERDEVICEADDED) {
                         gamecontroller = SDL_GameControllerOpen(event.cdevice.which);
+                        if (gamecontroller != NULL) {
+                            SDL_assert(SDL_GameControllerFromInstanceID(SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(gamecontroller))) == gamecontroller);
+                        }
                         break;
                     }
                 }

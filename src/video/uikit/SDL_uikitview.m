@@ -1,6 +1,6 @@
  /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -143,12 +143,13 @@
 
         if (!firstFingerDown) {
             CGPoint locationInView = [self touchLocation:touch shouldNormalize:NO];
+            int clicks = (int) touch.tapCount;
 
             /* send mouse moved event */
             SDL_SendMouseMotion(sdlwindow, SDL_TOUCH_MOUSEID, 0, locationInView.x, locationInView.y);
 
             /* send mouse down event */
-            SDL_SendMouseButton(sdlwindow, SDL_TOUCH_MOUSEID, SDL_PRESSED, SDL_BUTTON_LEFT);
+            SDL_SendMouseButtonClicks(sdlwindow, SDL_TOUCH_MOUSEID, SDL_PRESSED, SDL_BUTTON_LEFT, clicks);
 
             firstFingerDown = touch;
         }
@@ -166,7 +167,8 @@
 
         if (touch == firstFingerDown) {
             /* send mouse up */
-            SDL_SendMouseButton(sdlwindow, SDL_TOUCH_MOUSEID, SDL_RELEASED, SDL_BUTTON_LEFT);
+            int clicks = (int) touch.tapCount;
+            SDL_SendMouseButtonClicks(sdlwindow, SDL_TOUCH_MOUSEID, SDL_RELEASED, SDL_BUTTON_LEFT, clicks);
             firstFingerDown = nil;
         }
 
