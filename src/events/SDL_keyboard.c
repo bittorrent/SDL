@@ -273,6 +273,9 @@ static const SDL_Keycode SDL_default_keymap[SDL_NUM_SCANCODES] = {
     SDLK_KBDILLUMUP,
     SDLK_EJECT,
     SDLK_SLEEP,
+    0, 0,
+    SDLK_REWIND,
+    SDLK_FASTFORWARD,
 };
 
 static const char *SDL_scancode_names[SDL_NUM_SCANCODES] = {
@@ -505,6 +508,9 @@ static const char *SDL_scancode_names[SDL_NUM_SCANCODES] = {
     "KBDIllumUp",
     "Eject",
     "Sleep",
+    NULL, NULL,
+    "Rewind",
+    "Fast Forward",
 };
 
 /* Taken from SDL_iconv() */
